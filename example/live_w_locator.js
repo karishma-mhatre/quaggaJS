@@ -120,8 +120,13 @@ $(function() {
                     name = $target.attr("name"),
                     state = self._convertNameToState(name);
 
-                console.log("Value of "+ state + " changed to " + value);
+                console.log("Value of " + state + " changed to " + value);
                 self.setState(state, value);
+            });
+
+            $('.decodeVin').on('click', function(e) {
+              e.preventDefault();
+              self.setState("decoder.readers", "code_39_vin");
             });
         },
         _printCollectedResults: function() {
@@ -171,6 +176,11 @@ $(function() {
                     return track.applyConstraints({advanced: [{torch: !!value}]});
                 }
             }
+        },
+        startDecodingVin: function() {
+            App.detachListeners();
+            Quagga.stop();
+            App.init();
         },
         setState: function(path, value) {
             var self = this;
@@ -231,10 +241,10 @@ $(function() {
             inputStream: {
                 type : "LiveStream",
                 constraints: {
-                    width: {min: 640},
-                    height: {min: 480},
+                    width: { exact: 1200 },
+                    height: { exact: 320 },
                     facingMode: "environment",
-                    aspectRatio: {min: 1, max: 2}
+                    // aspectRatio: {min: 1, max: 4}
                 }
             },
             locator: {
@@ -245,7 +255,7 @@ $(function() {
             frequency: 10,
             decoder: {
                 readers : [{
-                    format: "code_128_reader",
+                    format: "code_39_vin_reader",
                     config: {}
                 }]
             },
@@ -257,8 +267,10 @@ $(function() {
     App.init();
 
     Quagga.onProcessed(function(result) {
+        console.log(result);
         var drawingCtx = Quagga.canvas.ctx.overlay,
             drawingCanvas = Quagga.canvas.dom.overlay;
+
 
         if (result) {
             if (result.boxes) {
@@ -295,3 +307,17 @@ $(function() {
     });
 
 });
+
+// export const isLandscapeAvailable = () => _isFunction(document.documentElement.requestFullscreen) && _isFunction(screen.orientation.lock);
+
+// export const onModalOpenMobileView = () => {
+//   if (!isLandscapeAvailable()) return;
+//   document.documentElement.requestFullscreen().then(() => {
+//     screen.orientation.lock('landscape').then(() => {
+//     }).catch((err) => {
+//       console.error('Could not change orientation');
+//     });
+//   }).catch((err) => {
+//     console.error('Could not change to full screen');
+//   });
+// };

@@ -296,3 +296,8 @@ i.icon-24-scan {
     width: 16px;
   }
 }
+
+.hidden {
+  visibility: hidden;
+  height: 0px;
+}

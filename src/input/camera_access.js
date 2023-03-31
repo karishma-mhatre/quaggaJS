@@ -81,6 +81,7 @@ export function pickConstraints(videoConstraints) {
             && normalizedConstraints.video.facingMode) {
         delete normalizedConstraints.video.facingMode;
     }
+    console.log(normalizedConstraints);
     return Promise.resolve(normalizedConstraints);
 }
 
